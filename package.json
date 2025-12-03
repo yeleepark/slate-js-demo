@@ -4,8 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build && node scripts/export-to-docs.mjs",
-    "export": "next build && node scripts/export-to-docs.mjs",
+    "build": "next build",
+    "export": "next build",
+    "export:gh": "NEXT_PUBLIC_BASE_PATH=/three-js-playground next build",
+    "deploy:gh": "rm -rf docs && yarn export:gh && mv out docs && touch docs/.nojekyll",
     "start": "next start",
     "lint": "next lint",
     "format": "prettier --write .",
