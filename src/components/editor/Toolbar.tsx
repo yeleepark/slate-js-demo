@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useCallback, useRef } from 'react';
 import { useSlate } from 'slate-react';
 import {
   insertImage,
@@ -181,9 +181,40 @@ const HeadingSelect: React.FC = () => {
 export const Toolbar: React.FC = () => {
   const editor = useSlate();
   const linkActive = isLinkActive(editor);
+  const imageInputRef = useRef<HTMLInputElement | null>(null);
+
+  const handleImageFile = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const file = event.target.files?.[0];
+      event.target.value = '';
+      if (!file) return;
+
+      if (!file.type.startsWith('image/')) {
+        alert('이미지 파일을 선택해주세요.');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        const result = reader.result;
+        if (typeof result !== 'string') return;
+
+        insertImage(editor, result, file.name);
+      };
+      reader.readAsDataURL(file);
+    },
+    [editor]
+  );
 
   return (
     <div className="flex flex-wrap items-center gap-1 p-3 bg-slate-800/80 backdrop-blur-sm border-b border-slate-700/50 rounded-t-xl">
+      <input
+        ref={imageInputRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={handleImageFile}
+      />
       {/* Mark Buttons */}
       <ToolbarButton format="bold" icon="B" title="굵게 (Ctrl+B)" />
       <ToolbarButton format="italic" icon="I" title="기울임 (Ctrl+I)" />
@@ -231,11 +262,7 @@ export const Toolbar: React.FC = () => {
         icon="🖼"
         title="이미지 추가"
         onClick={() => {
-          const url = window.prompt('추가할 이미지 URL을 입력하세요');
-          if (!url) return;
-          const alt = window.prompt('이미지 설명(선택 사항)을 입력하세요') ?? undefined;
-          const caption = window.prompt('이미지 캡션(선택 사항)을 입력하세요') ?? undefined;
-          insertImage(editor, url.trim(), alt?.trim() || undefined, caption?.trim() || undefined);
+          imageInputRef.current?.click();
         }}
       />
       <ActionButton
