@@ -24,7 +24,7 @@ yarn build   # `next build` + docs sync
 | --------------- | ----------------------------------------- |
 | `yarn dev`      | Start local dev server                    |
 | `yarn build`    | Production build then syncs `out/` → `docs/` |
-| `yarn export`   | Same as `yarn build` (useful for CI)      |
+| `yarn build:gh` | Same as `yarn build` with `NEXT_PUBLIC_BASE_PATH=/slate-js-demo` |
 | `yarn lint`     | ESLint check                              |
 | `yarn format`   | Prettier write                            |
 | `yarn format:check` | Prettier check                        |

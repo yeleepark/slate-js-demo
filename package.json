@@ -4,10 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
-    "export": "next build",
-    "export:gh": "NEXT_PUBLIC_BASE_PATH=/slate-js-demo next build",
-    "deploy:gh": "rm -rf docs && yarn export:gh && mv out docs && touch docs/.nojekyll",
+    "build": "next build && node scripts/export-to-docs.mjs",
+    "build:gh": "NEXT_PUBLIC_BASE_PATH=/slate-js-demo next build && node scripts/export-to-docs.mjs",
+    "deploy:gh": "yarn build:gh",
     "start": "next start",
     "lint": "next lint",
     "format": "prettier --write .",

@@ -1,0 +1,262 @@
+<!DOCTYPE html><html lang="ko"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="preload" href="/slate-js-demo/_next/static/media/4473ecc91f70f139-s.p.woff" as="font" crossorigin="" type="font/woff"/><link rel="preload" href="/slate-js-demo/_next/static/media/463dafcda517f24f-s.p.woff" as="font" crossorigin="" type="font/woff"/><link rel="preload" as="image" href="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&amp;fit=crop&amp;w=1200&amp;q=80"/><link rel="stylesheet" href="/slate-js-demo/_next/static/css/12e42f48b86bdea5.css" data-precedence="next"/><link rel="preload" as="script" fetchPriority="low" href="/slate-js-demo/_next/static/chunks/webpack-eeadbb23f426543d.js"/><script src="/slate-js-demo/_next/static/chunks/fd9d1056-6b6ff3bd80b2326c.js" async=""></script><script src="/slate-js-demo/_next/static/chunks/117-cc0be23925c4873d.js" async=""></script><script src="/slate-js-demo/_next/static/chunks/main-app-b17ab5a54d71e235.js" async=""></script><script src="/slate-js-demo/_next/static/chunks/ccd63cfe-3281307a811e75ac.js" async=""></script><script src="/slate-js-demo/_next/static/chunks/8ace8c09-2f0b0a3916af7dd0.js" async=""></script><script src="/slate-js-demo/_next/static/chunks/866-7d542b657918d86e.js" async=""></script><script src="/slate-js-demo/_next/static/chunks/app/page-bd2d4e0af1e021ac.js" async=""></script><title>Slate.js Editor Demo</title><meta name="description" content="Next.js 14와 Slate.js로 구현한 리치 텍스트 에디터 데모"/><link rel="icon" href="/slate-js-demo/favicon.ico" type="image/x-icon" sizes="16x16"/><meta name="next-size-adjust"/><script src="/slate-js-demo/_next/static/chunks/polyfills-42372ed130431b0a.js" noModule=""></script></head><body class="__variable_d35095 __variable_758ee8 antialiased"><main class="min-h-screen bg-pattern"><header class="border-b border-slate-800/50 backdrop-blur-sm bg-slate-900/50 sticky top-0 z-10"><div class="max-w-6xl mx-auto px-6 py-4"><div class="flex items-center justify-between"><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-lg bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-lg shadow-amber-500/20"><span class="text-xl">📝</span></div><div><h1 class="text-xl font-bold text-white">Slate Editor</h1><p class="text-xs text-slate-500">Next.js 14 + Slate.js</p></div></div><div class="flex items-center gap-2"><a href="https://docs.slatejs.org/" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 text-sm text-slate-400 hover:text-white transition-colors">Docs</a><a href="https://github.com/ianstormtaylor/slate" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 text-sm bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg transition-colors">GitHub</a></div></div></div></header><div class="max-w-6xl mx-auto px-6 py-12"><div class="w-full max-w-4xl mx-auto"><div class="rounded-xl shadow-2xl shadow-slate-900/50 border border-slate-700/50 overflow-hidden bg-gradient-to-b from-slate-800 to-slate-900"><div class="flex flex-wrap items-center gap-1 p-3 bg-slate-800/80 backdrop-blur-sm border-b border-slate-700/50 rounded-t-xl"><button title="굵게 (Ctrl+B)" class="
+        px-3 py-2 rounded-md text-sm font-medium transition-all duration-200
+        bg-slate-700/50 text-slate-300 hover:bg-slate-600 hover:text-white
+      ">B</button><button title="기울임 (Ctrl+I)" class="
+        px-3 py-2 rounded-md text-sm font-medium transition-all duration-200
+        bg-slate-700/50 text-slate-300 hover:bg-slate-600 hover:text-white
+      ">I</button><button title="밑줄 (Ctrl+U)" class="
+        px-3 py-2 rounded-md text-sm font-medium transition-all duration-200
+        bg-slate-700/50 text-slate-300 hover:bg-slate-600 hover:text-white
+      ">U</button><button title="코드 (Ctrl+`)" class="
+        px-3 py-2 rounded-md text-sm font-medium transition-all duration-200
+        bg-slate-700/50 text-slate-300 hover:bg-slate-600 hover:text-white
+      ">&lt;&gt;</button><div class="w-px h-6 bg-slate-600 mx-1" aria-hidden="true"></div><button title="제목" class="
+        px-3 py-2 rounded-md text-sm font-medium transition-all duration-200
+        bg-slate-700/50 text-slate-300 hover:bg-slate-600 hover:text-white
+      ">H1</button><button title="인용문" class="
+        px-3 py-2 rounded-md text-sm font-medium transition-all duration-200
+        bg-slate-700/50 text-slate-300 hover:bg-slate-600 hover:text-white
+      ">❝</button><button title="코드 블록" class="
+        px-3 py-2 rounded-md text-sm font-medium transition-all duration-200
+        bg-slate-700/50 text-slate-300 hover:bg-slate-600 hover:text-white
+      ">{ }</button><div class="w-px h-6 bg-slate-600 mx-1" aria-hidden="true"></div><button title="글머리 기호 목록" class="
+        px-3 py-2 rounded-md text-sm font-medium transition-all duration-200
+        bg-slate-700/50 text-slate-300 hover:bg-slate-600 hover:text-white
+      ">•</button><button title="번호 매기기 목록" class="
+        px-3 py-2 rounded-md text-sm font-medium transition-all duration-200
+        bg-slate-700/50 text-slate-300 hover:bg-slate-600 hover:text-white
+      ">1.</button><div class="w-px h-6 bg-slate-600 mx-1" aria-hidden="true"></div><button title="좌측 정렬" class="
+        px-3 py-2 rounded-md text-sm font-medium transition-all duration-200
+        bg-slate-700/50 text-slate-300 hover:bg-slate-600 hover:text-white
+      ">⇤</button><button title="가운데 정렬" class="
+        px-3 py-2 rounded-md text-sm font-medium transition-all duration-200
+        bg-slate-700/50 text-slate-300 hover:bg-slate-600 hover:text-white
+      ">↔</button><button title="우측 정렬" class="
+        px-3 py-2 rounded-md text-sm font-medium transition-all duration-200
+        bg-slate-700/50 text-slate-300 hover:bg-slate-600 hover:text-white
+      ">⇥</button><div class="w-px h-6 bg-slate-600 mx-1" aria-hidden="true"></div><button title="이미지 추가" class="
+      px-3 py-2 rounded-md text-sm font-medium transition-all duration-200
+      bg-slate-700/50 text-slate-300 hover:bg-slate-600 hover:text-white
+    ">🖼</button><button title="링크 추가" class="
+      px-3 py-2 rounded-md text-sm font-medium transition-all duration-200
+      bg-slate-700/50 text-slate-300 hover:bg-slate-600 hover:text-white
+    ">🔗</button><button title="구분선 추가" class="
+      px-3 py-2 rounded-md text-sm font-medium transition-all duration-200
+      bg-slate-700/50 text-slate-300 hover:bg-slate-600 hover:text-white
+    ">━</button><button title="표 삽입" class="
+      px-3 py-2 rounded-md text-sm font-medium transition-all duration-200
+      bg-slate-700/50 text-slate-300 hover:bg-slate-600 hover:text-white
+    ">▦</button></div><div class="p-6 min-h-[400px]"><div role="textbox" aria-multiline="true" translate="no" class="outline-none min-h-[350px] focus:ring-0" spellCheck="true" data-slate-editor="true" data-slate-node="value" contentEditable="true" zindex="-1" style="position:relative;white-space:pre-wrap;word-wrap:break-word"><h1 data-slate-node="element" class="text-3xl font-bold text-white mb-4 mt-6" style="text-align:left"><span data-slate-node="text"><span data-slate-leaf="true"><span data-slate-string="true">Slate.js 텍스트 에디터 데모</span></span></span></h1><p data-slate-node="element" class="my-2 text-slate-300 leading-relaxed" style="text-align:left"><span data-slate-node="text"><span data-slate-leaf="true"><span data-slate-string="true">이것은 </span></span></span><span data-slate-node="text"><span data-slate-leaf="true"><strong class="font-bold text-white"><span data-slate-string="true">Slate.js</span></strong></span></span><span data-slate-node="text"><span data-slate-leaf="true"><span data-slate-string="true">로 구현된 리치 텍스트 에디터입니다. </span></span></span><span data-slate-node="text"><span data-slate-leaf="true"><em class="italic text-amber-300"><span data-slate-string="true">Next.js 14</span></em></span></span><span data-slate-node="text"><span data-slate-leaf="true"><span data-slate-string="true"> 환경에서 실행됩니다.</span></span></span></p><h2 data-slate-node="element" class="text-2xl font-semibold text-slate-200 mb-3 mt-5" style="text-align:left"><span data-slate-node="text"><span data-slate-leaf="true"><span data-slate-string="true">지원하는 기능들</span></span></span></h2><ul data-slate-node="element" class="list-disc list-inside my-3 space-y-1 text-slate-300 ml-4" style="text-align:left"><li data-slate-node="element" class="pl-1" style="text-align:left"><span data-slate-node="text"><span data-slate-leaf="true"><span data-slate-string="true">굵게 (Ctrl+B)</span></span></span></li><li data-slate-node="element" class="pl-1" style="text-align:left"><span data-slate-node="text"><span data-slate-leaf="true"><span data-slate-string="true">기울임 (Ctrl+I)</span></span></span></li><li data-slate-node="element" class="pl-1" style="text-align:left"><span data-slate-node="text"><span data-slate-leaf="true"><span data-slate-string="true">밑줄 (Ctrl+U)</span></span></span></li><li data-slate-node="element" class="pl-1" style="text-align:left"><span data-slate-node="text"><span data-slate-leaf="true"><span data-slate-string="true">코드 (Ctrl+`)</span></span></span></li></ul><blockquote data-slate-node="element" class="border-l-4 border-amber-500 pl-4 py-2 my-4 bg-slate-800/50 rounded-r-lg italic text-slate-300" style="text-align:left"><span data-slate-node="text"><span data-slate-leaf="true"><span data-slate-string="true">인용문 블록도 지원합니다. 텍스트를 강조할 때 사용하세요.</span></span></span></blockquote><pre data-slate-node="element" class="bg-slate-900 rounded-lg p-4 my-4 overflow-x-auto font-mono text-sm text-emerald-400 border border-slate-700" style="text-align:left"><code><span data-slate-node="text"><span data-slate-leaf="true"><span data-slate-string="true">const greeting = &quot;Hello, Slate!&quot;;
+console.log(greeting);</span></span></span></code></pre><p data-slate-node="element" class="my-2 text-slate-300 leading-relaxed" style="text-align:center"><span data-slate-node="text"><span data-slate-leaf="true"><span data-slate-string="true">자세한 가이드는 </span></span></span><a data-slate-node="element" href="https://docs.slatejs.org" target="_blank" rel="noreferrer" class="text-amber-400 underline underline-offset-4 decoration-amber-500 hover:text-amber-300"><span data-slate-node="text"><span data-slate-leaf="true"><span data-slate-string="true">Slate 공식 문서</span></span></span></a><span data-slate-node="text"><span data-slate-leaf="true"><span data-slate-string="true">를 참고하세요.</span></span></span></p><div data-slate-node="element" class="my-6 flex justify-center" style="text-align:center"><div contentEditable="false" class="inline-block max-w-full"><figure class="space-y-2"><img src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="에디터 이미지" class="max-h-[400px] w-full object-contain rounded-lg border border-slate-700 bg-slate-900"/><figcaption class="text-xs text-slate-400 text-center">Unsplash 제공 예시 이미지</figcaption></figure></div><span data-slate-node="text"><span data-slate-leaf="true"><span data-slate-zero-width="n" data-slate-length="0">﻿<br/></span></span></span></div><div data-slate-node="element" class="my-8 flex justify-center" style="text-align:center"><div contentEditable="false" class="w-full max-w-2xl"><hr class="border-t border-slate-700/70"/></div><span data-slate-node="text"><span data-slate-leaf="true"><span data-slate-zero-width="n" data-slate-length="0">﻿<br/></span></span></span></div><div data-slate-node="element" class="my-6 overflow-x-auto" style="text-align:center"><table class="w-full border-collapse rounded-xl overflow-hidden"><tbody><tr data-slate-node="element"><td data-slate-node="element" class="border border-slate-700/60 px-3 py-2 align-top" style="text-align:left;min-width:100px"><span data-slate-node="text"><span data-slate-leaf="true"><span data-slate-string="true">기능</span></span></span></td><td data-slate-node="element" class="border border-slate-700/60 px-3 py-2 align-top" style="text-align:left;min-width:100px"><span data-slate-node="text"><span data-slate-leaf="true"><span data-slate-string="true">설명</span></span></span></td></tr><tr data-slate-node="element"><td data-slate-node="element" class="border border-slate-700/60 px-3 py-2 align-top" style="text-align:left;min-width:100px"><span data-slate-node="text"><span data-slate-leaf="true"><span data-slate-string="true">정렬</span></span></span></td><td data-slate-node="element" class="border border-slate-700/60 px-3 py-2 align-top" style="text-align:left;min-width:100px"><span data-slate-node="text"><span data-slate-leaf="true"><span data-slate-string="true">좌/중앙/우측 정렬을 제공합니다.</span></span></span></td></tr><tr data-slate-node="element"><td data-slate-node="element" class="border border-slate-700/60 px-3 py-2 align-top" style="text-align:left;min-width:100px"><span data-slate-node="text"><span data-slate-leaf="true"><span data-slate-string="true">이미지</span></span></span></td><td data-slate-node="element" class="border border-slate-700/60 px-3 py-2 align-top" style="text-align:left;min-width:100px"><span data-slate-node="text"><span data-slate-leaf="true"><span data-slate-string="true">URL 입력으로 이미지를 삽입합니다.</span></span></span></td></tr></tbody></table></div><p data-slate-node="element" class="my-2 text-slate-300 leading-relaxed" style="text-align:left"><span data-slate-node="text"><span data-slate-leaf="true"><span data-slate-string="true">위의 도구 모음을 사용하여 텍스트 서식을 변경해보세요!</span></span></span></p></div></div></div><details class="mt-6"><summary class="cursor-pointer text-slate-500 hover:text-slate-400 text-sm font-mono">📋 에디터 데이터 (JSON)</summary><pre class="mt-2 p-4 bg-slate-900 rounded-lg text-xs text-slate-400 overflow-auto max-h-64 border border-slate-700">[
+  {
+    &quot;type&quot;: &quot;heading&quot;,
+    &quot;level&quot;: 1,
+    &quot;children&quot;: [
+      {
+        &quot;text&quot;: &quot;Slate.js 텍스트 에디터 데모&quot;
+      }
+    ]
+  },
+  {
+    &quot;type&quot;: &quot;paragraph&quot;,
+    &quot;children&quot;: [
+      {
+        &quot;text&quot;: &quot;이것은 &quot;
+      },
+      {
+        &quot;text&quot;: &quot;Slate.js&quot;,
+        &quot;bold&quot;: true
+      },
+      {
+        &quot;text&quot;: &quot;로 구현된 리치 텍스트 에디터입니다. &quot;
+      },
+      {
+        &quot;text&quot;: &quot;Next.js 14&quot;,
+        &quot;italic&quot;: true
+      },
+      {
+        &quot;text&quot;: &quot; 환경에서 실행됩니다.&quot;
+      }
+    ]
+  },
+  {
+    &quot;type&quot;: &quot;heading&quot;,
+    &quot;level&quot;: 2,
+    &quot;children&quot;: [
+      {
+        &quot;text&quot;: &quot;지원하는 기능들&quot;
+      }
+    ]
+  },
+  {
+    &quot;type&quot;: &quot;bulleted-list&quot;,
+    &quot;children&quot;: [
+      {
+        &quot;type&quot;: &quot;list-item&quot;,
+        &quot;children&quot;: [
+          {
+            &quot;text&quot;: &quot;굵게 (Ctrl+B)&quot;
+          }
+        ]
+      },
+      {
+        &quot;type&quot;: &quot;list-item&quot;,
+        &quot;children&quot;: [
+          {
+            &quot;text&quot;: &quot;기울임 (Ctrl+I)&quot;
+          }
+        ]
+      },
+      {
+        &quot;type&quot;: &quot;list-item&quot;,
+        &quot;children&quot;: [
+          {
+            &quot;text&quot;: &quot;밑줄 (Ctrl+U)&quot;
+          }
+        ]
+      },
+      {
+        &quot;type&quot;: &quot;list-item&quot;,
+        &quot;children&quot;: [
+          {
+            &quot;text&quot;: &quot;코드 (Ctrl+`)&quot;
+          }
+        ]
+      }
+    ]
+  },
+  {
+    &quot;type&quot;: &quot;blockquote&quot;,
+    &quot;children&quot;: [
+      {
+        &quot;text&quot;: &quot;인용문 블록도 지원합니다. 텍스트를 강조할 때 사용하세요.&quot;
+      }
+    ]
+  },
+  {
+    &quot;type&quot;: &quot;code-block&quot;,
+    &quot;children&quot;: [
+      {
+        &quot;text&quot;: &quot;const greeting = \&quot;Hello, Slate!\&quot;;\nconsole.log(greeting);&quot;
+      }
+    ]
+  },
+  {
+    &quot;type&quot;: &quot;paragraph&quot;,
+    &quot;align&quot;: &quot;center&quot;,
+    &quot;children&quot;: [
+      {
+        &quot;text&quot;: &quot;자세한 가이드는 &quot;
+      },
+      {
+        &quot;type&quot;: &quot;link&quot;,
+        &quot;url&quot;: &quot;https://docs.slatejs.org&quot;,
+        &quot;children&quot;: [
+          {
+            &quot;text&quot;: &quot;Slate 공식 문서&quot;
+          }
+        ]
+      },
+      {
+        &quot;text&quot;: &quot;를 참고하세요.&quot;
+      }
+    ]
+  },
+  {
+    &quot;type&quot;: &quot;image&quot;,
+    &quot;url&quot;: &quot;https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&amp;fit=crop&amp;w=1200&amp;q=80&quot;,
+    &quot;caption&quot;: &quot;Unsplash 제공 예시 이미지&quot;,
+    &quot;align&quot;: &quot;center&quot;,
+    &quot;children&quot;: [
+      {
+        &quot;text&quot;: &quot;&quot;
+      }
+    ]
+  },
+  {
+    &quot;type&quot;: &quot;divider&quot;,
+    &quot;align&quot;: &quot;center&quot;,
+    &quot;children&quot;: [
+      {
+        &quot;text&quot;: &quot;&quot;
+      }
+    ]
+  },
+  {
+    &quot;type&quot;: &quot;table&quot;,
+    &quot;align&quot;: &quot;center&quot;,
+    &quot;children&quot;: [
+      {
+        &quot;type&quot;: &quot;table-row&quot;,
+        &quot;children&quot;: [
+          {
+            &quot;type&quot;: &quot;table-cell&quot;,
+            &quot;children&quot;: [
+              {
+                &quot;text&quot;: &quot;기능&quot;
+              }
+            ]
+          },
+          {
+            &quot;type&quot;: &quot;table-cell&quot;,
+            &quot;children&quot;: [
+              {
+                &quot;text&quot;: &quot;설명&quot;
+              }
+            ]
+          }
+        ]
+      },
+      {
+        &quot;type&quot;: &quot;table-row&quot;,
+        &quot;children&quot;: [
+          {
+            &quot;type&quot;: &quot;table-cell&quot;,
+            &quot;children&quot;: [
+              {
+                &quot;text&quot;: &quot;정렬&quot;
+              }
+            ]
+          },
+          {
+            &quot;type&quot;: &quot;table-cell&quot;,
+            &quot;children&quot;: [
+              {
+                &quot;text&quot;: &quot;좌/중앙/우측 정렬을 제공합니다.&quot;
+              }
+            ]
+          }
+        ]
+      },
+      {
+        &quot;type&quot;: &quot;table-row&quot;,
+        &quot;children&quot;: [
+          {
+            &quot;type&quot;: &quot;table-cell&quot;,
+            &quot;children&quot;: [
+              {
+                &quot;text&quot;: &quot;이미지&quot;
+              }
+            ]
+          },
+          {
+            &quot;type&quot;: &quot;table-cell&quot;,
+            &quot;children&quot;: [
+              {
+                &quot;text&quot;: &quot;URL 입력으로 이미지를 삽입합니다.&quot;
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    &quot;type&quot;: &quot;paragraph&quot;,
+    &quot;children&quot;: [
+      {
+        &quot;text&quot;: &quot;위의 도구 모음을 사용하여 텍스트 서식을 변경해보세요!&quot;
+      }
+    ]
+  }
+]</pre></details></div></div></main><script src="/slate-js-demo/_next/static/chunks/webpack-eeadbb23f426543d.js" async=""></script><script>(self.__next_f=self.__next_f||[]).push([0]);self.__next_f.push([2,null])</script><script>self.__next_f.push([1,"1:HL[\"/slate-js-demo/_next/static/media/4473ecc91f70f139-s.p.woff\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff\"}]\n2:HL[\"/slate-js-demo/_next/static/media/463dafcda517f24f-s.p.woff\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff\"}]\n3:HL[\"/slate-js-demo/_next/static/css/12e42f48b86bdea5.css\",\"style\"]\n"])</script><script>self.__next_f.push([1,"4:I[2846,[],\"\"]\n6:I[9107,[],\"ClientPageRoot\"]\n7:I[1620,[\"815\",\"static/chunks/ccd63cfe-3281307a811e75ac.js\",\"583\",\"static/chunks/8ace8c09-2f0b0a3916af7dd0.js\",\"866\",\"static/chunks/866-7d542b657918d86e.js\",\"931\",\"static/chunks/app/page-bd2d4e0af1e021ac.js\"],\"default\",1]\n8:I[4707,[],\"\"]\n9:I[6423,[],\"\"]\nb:I[1060,[],\"\"]\nc:[]\n"])</script><script>self.__next_f.push([1,"0:[\"$\",\"$L4\",null,{\"buildId\":\"v6juV9kRmDpT7V7FFf4Za\",\"assetPrefix\":\"/slate-js-demo\",\"urlParts\":[\"\",\"\"],\"initialTree\":[\"\",{\"children\":[\"__PAGE__\",{}]},\"$undefined\",\"$undefined\",true],\"initialSeedData\":[\"\",{\"children\":[\"__PAGE__\",{},[[\"$L5\",[\"$\",\"$L6\",null,{\"props\":{\"params\":{},\"searchParams\":{}},\"Component\":\"$7\"}],null],null],null]},[[[[\"$\",\"link\",\"0\",{\"rel\":\"stylesheet\",\"href\":\"/slate-js-demo/_next/static/css/12e42f48b86bdea5.css\",\"precedence\":\"next\",\"crossOrigin\":\"$undefined\"}]],[\"$\",\"html\",null,{\"lang\":\"ko\",\"children\":[\"$\",\"body\",null,{\"className\":\"__variable_d35095 __variable_758ee8 antialiased\",\"children\":[\"$\",\"$L8\",null,{\"parallelRouterKey\":\"children\",\"segmentPath\":[\"children\"],\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L9\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":[[\"$\",\"title\",null,{\"children\":\"404: This page could not be found.\"}],[\"$\",\"div\",null,{\"style\":{\"fontFamily\":\"system-ui,\\\"Segoe UI\\\",Roboto,Helvetica,Arial,sans-serif,\\\"Apple Color Emoji\\\",\\\"Segoe UI Emoji\\\"\",\"height\":\"100vh\",\"textAlign\":\"center\",\"display\":\"flex\",\"flexDirection\":\"column\",\"alignItems\":\"center\",\"justifyContent\":\"center\"},\"children\":[\"$\",\"div\",null,{\"children\":[[\"$\",\"style\",null,{\"dangerouslySetInnerHTML\":{\"__html\":\"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}\"}}],[\"$\",\"h1\",null,{\"className\":\"next-error-h1\",\"style\":{\"display\":\"inline-block\",\"margin\":\"0 20px 0 0\",\"padding\":\"0 23px 0 0\",\"fontSize\":24,\"fontWeight\":500,\"verticalAlign\":\"top\",\"lineHeight\":\"49px\"},\"children\":\"404\"}],[\"$\",\"div\",null,{\"style\":{\"display\":\"inline-block\"},\"children\":[\"$\",\"h2\",null,{\"style\":{\"fontSize\":14,\"fontWeight\":400,\"lineHeight\":\"49px\",\"margin\":0},\"children\":\"This page could not be found.\"}]}]]}]}]],\"notFoundStyles\":[]}]}]}]],null],null],\"couldBeIntercepted\":false,\"initialHead\":[null,\"$La\"],\"globalErrorComponent\":\"$b\",\"missingSlots\":\"$Wc\"}]\n"])</script><script>self.__next_f.push([1,"a:[[\"$\",\"meta\",\"0\",{\"name\":\"viewport\",\"content\":\"width=device-width, initial-scale=1\"}],[\"$\",\"meta\",\"1\",{\"charSet\":\"utf-8\"}],[\"$\",\"title\",\"2\",{\"children\":\"Slate.js Editor Demo\"}],[\"$\",\"meta\",\"3\",{\"name\":\"description\",\"content\":\"Next.js 14와 Slate.js로 구현한 리치 텍스트 에디터 데모\"}],[\"$\",\"link\",\"4\",{\"rel\":\"icon\",\"href\":\"/slate-js-demo/favicon.ico\",\"type\":\"image/x-icon\",\"sizes\":\"16x16\"}],[\"$\",\"meta\",\"5\",{\"name\":\"next-size-adjust\"}]]\n5:null\n"])</script></body></html>
