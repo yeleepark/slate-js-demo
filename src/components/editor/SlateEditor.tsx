@@ -1,12 +1,12 @@
 'use client';
 
 import React, { useCallback, useState } from 'react';
-import { createEditor, Descendant } from 'slate';
+import { createEditor, Descendant, Editor, Range, Transforms } from 'slate';
 import { Slate, Editable, withReact } from 'slate-react';
 import { withHistory } from 'slate-history';
 import { Toolbar } from './Toolbar';
 import { Element, Leaf } from './Elements';
-import { toggleMark } from './helpers';
+import { createVideoElement, getYouTubeEmbedUrl, toggleMark } from './helpers';
 import { initialValue, MarkFormat } from './types';
 
 const HOTKEYS: Record<string, MarkFormat> = {
@@ -30,8 +30,37 @@ export const SlateEditor: React.FC = () => {
     []
   );
 
+  const convertYouTubeLinkInCurrentBlock = useCallback(() => {
+    const { selection } = editor;
+    if (!selection || !Range.isCollapsed(selection)) return false;
+
+    const blockEntry = Editor.above(editor, {
+      match: n => Editor.isBlock(editor, n),
+    });
+
+    if (!blockEntry) return false;
+
+    const [, path] = blockEntry;
+    const blockText = Editor.string(editor, path).trim();
+    const embedUrl = getYouTubeEmbedUrl(blockText);
+
+    if (!embedUrl) return false;
+
+    Transforms.removeNodes(editor, { at: path });
+    Transforms.insertNodes(editor, createVideoElement(embedUrl), { at: path });
+    return true;
+  }, [editor]);
+
   const handleKeyDown = useCallback(
     (event: React.KeyboardEvent<HTMLDivElement>) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        const didEmbed = convertYouTubeLinkInCurrentBlock();
+        if (didEmbed) {
+          event.preventDefault();
+          return;
+        }
+      }
+
       if (!event.ctrlKey && !event.metaKey) return;
 
       const key = event.key.toLowerCase();
@@ -41,6 +70,18 @@ export const SlateEditor: React.FC = () => {
         event.preventDefault();
         toggleMark(editor, format);
       }
+    },
+    [convertYouTubeLinkInCurrentBlock, editor]
+  );
+
+  const handlePaste = useCallback(
+    (event: React.ClipboardEvent<HTMLDivElement>) => {
+      const text = event.clipboardData?.getData('text/plain')?.trim();
+      const embedUrl = text ? getYouTubeEmbedUrl(text) : null;
+      if (!embedUrl) return;
+
+      event.preventDefault();
+      Transforms.insertNodes(editor, createVideoElement(embedUrl));
     },
     [editor]
   );
@@ -55,6 +96,7 @@ export const SlateEditor: React.FC = () => {
               renderElement={renderElement}
               renderLeaf={renderLeaf}
               onKeyDown={handleKeyDown}
+              onPaste={handlePaste}
               placeholder="여기에 텍스트를 입력하세요..."
               className="outline-none min-h-[350px] focus:ring-0"
               spellCheck

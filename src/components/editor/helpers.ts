@@ -217,20 +217,30 @@ const extractYouTubeId = (url: string): string | null => {
 
 const buildYouTubeEmbedUrl = (id: string): string => `https://www.youtube.com/embed/${id}?rel=0`;
 
+export const getYouTubeEmbedUrl = (url: string): string | null => {
+  const trimmed = url.trim();
+  if (!trimmed || /\s/.test(trimmed)) return null;
+
+  const videoId = extractYouTubeId(trimmed);
+  return videoId ? buildYouTubeEmbedUrl(videoId) : null;
+};
+
+export const createVideoElement = (url: string, title?: string): VideoElement => ({
+  type: 'video',
+  url,
+  title,
+  align: 'center',
+  children: [{ text: '' }],
+});
+
 export const insertVideo = (editor: Editor, url: string, title?: string): void => {
-  const videoId = extractYouTubeId(url.trim());
-  if (!videoId) {
+  const embedUrl = getYouTubeEmbedUrl(url);
+  if (!embedUrl) {
     alert('유효한 YouTube 링크를 입력하세요.');
     return;
   }
 
-  const video: VideoElement = {
-    type: 'video',
-    url: buildYouTubeEmbedUrl(videoId),
-    title,
-    align: 'center',
-    children: [{ text: '' }],
-  };
+  const video = createVideoElement(embedUrl, title);
 
   Transforms.insertNodes(editor, video);
 };
