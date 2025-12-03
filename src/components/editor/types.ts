@@ -3,6 +3,7 @@ import { ReactEditor } from 'slate-react';
 import { HistoryEditor } from 'slate-history';
 
 export type Alignment = 'left' | 'center' | 'right';
+export type TextSize = number;
 
 export type CustomText = {
   text: string;
@@ -14,6 +15,7 @@ export type CustomText = {
 
 type AlignableElement = {
   align?: Alignment;
+  fontSize?: TextSize;
 };
 
 export type LinkElement = {
@@ -31,9 +33,11 @@ export type ParagraphElement = AlignableElement & {
   children: RichText[];
 };
 
+export type HeadingLevel = 1 | 2 | 3 | 4 | 5 | 6;
+
 export type HeadingElement = AlignableElement & {
   type: 'heading';
-  level: 1 | 2 | 3;
+  level: HeadingLevel;
   children: RichText[];
 };
 

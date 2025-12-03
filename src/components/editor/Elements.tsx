@@ -3,24 +3,32 @@
 
 import React from 'react';
 import { RenderElementProps, RenderLeafProps } from 'slate-react';
-import { Alignment } from './types';
+import { Alignment, HeadingLevel, TextSize } from './types';
 
 const getTextAlign = (align?: Alignment) => align ?? 'left';
+const getFontSizeStyle = (size?: TextSize) => (size ? { fontSize: `${size}px` } : {});
+const buildStyle = (element: { align?: Alignment; fontSize?: TextSize }) => ({
+  textAlign: getTextAlign(element.align),
+  ...getFontSizeStyle(element.fontSize),
+});
 
 export const Element: React.FC<RenderElementProps> = ({ attributes, children, element }) => {
   switch (element.type) {
     case 'heading':
-      const HeadingTag = `h${element.level}` as 'h1' | 'h2' | 'h3';
-      const headingStyles = {
-        1: 'text-3xl font-bold text-white mb-4 mt-6',
-        2: 'text-2xl font-semibold text-slate-200 mb-3 mt-5',
-        3: 'text-xl font-medium text-slate-300 mb-2 mt-4',
+      const HeadingTag = `h${element.level}` as `h${HeadingLevel}`;
+      const headingStyles: Record<HeadingLevel, string> = {
+        1: 'text-4xl font-bold text-white mb-5 mt-7',
+        2: 'text-3xl font-semibold text-slate-100 mb-4 mt-6',
+        3: 'text-2xl font-semibold text-slate-200 mb-3 mt-5',
+        4: 'text-xl font-semibold text-slate-300 mb-3 mt-4',
+        5: 'text-lg font-medium text-slate-300 mb-2 mt-3',
+        6: 'text-base font-medium text-slate-400 mb-2 mt-3',
       };
       return (
         <HeadingTag
           {...attributes}
           className={headingStyles[element.level]}
-          style={{ textAlign: getTextAlign(element.align) }}
+          style={buildStyle(element)}
         >
           {children}
         </HeadingTag>
@@ -31,7 +39,7 @@ export const Element: React.FC<RenderElementProps> = ({ attributes, children, el
         <blockquote
           {...attributes}
           className="border-l-4 border-amber-500 pl-4 py-2 my-4 bg-slate-800/50 rounded-r-lg italic text-slate-300"
-          style={{ textAlign: getTextAlign(element.align) }}
+          style={buildStyle(element)}
         >
           {children}
         </blockquote>
@@ -42,7 +50,7 @@ export const Element: React.FC<RenderElementProps> = ({ attributes, children, el
         <pre
           {...attributes}
           className="bg-slate-900 rounded-lg p-4 my-4 overflow-x-auto font-mono text-sm text-emerald-400 border border-slate-700"
-          style={{ textAlign: getTextAlign(element.align) }}
+          style={buildStyle(element)}
         >
           <code>{children}</code>
         </pre>
@@ -53,7 +61,7 @@ export const Element: React.FC<RenderElementProps> = ({ attributes, children, el
         <ul
           {...attributes}
           className="list-disc list-inside my-3 space-y-1 text-slate-300 ml-4"
-          style={{ textAlign: getTextAlign(element.align) }}
+          style={buildStyle(element)}
         >
           {children}
         </ul>
@@ -64,7 +72,7 @@ export const Element: React.FC<RenderElementProps> = ({ attributes, children, el
         <ol
           {...attributes}
           className="list-decimal list-inside my-3 space-y-1 text-slate-300 ml-4"
-          style={{ textAlign: getTextAlign(element.align) }}
+          style={buildStyle(element)}
         >
           {children}
         </ol>
@@ -72,7 +80,7 @@ export const Element: React.FC<RenderElementProps> = ({ attributes, children, el
 
     case 'list-item':
       return (
-        <li {...attributes} className="pl-1" style={{ textAlign: getTextAlign(element.align) }}>
+        <li {...attributes} className="pl-1" style={buildStyle(element)}>
           {children}
         </li>
       );
@@ -186,7 +194,7 @@ export const Element: React.FC<RenderElementProps> = ({ attributes, children, el
         <p
           {...attributes}
           className="my-2 text-slate-300 leading-relaxed"
-          style={{ textAlign: getTextAlign(element.align) }}
+          style={buildStyle(element)}
         >
           {children}
         </p>

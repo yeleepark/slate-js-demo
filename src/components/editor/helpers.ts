@@ -4,12 +4,14 @@ import {
   BlockFormat,
   CustomElement,
   DividerElement,
+  HeadingLevel,
   ImageElement,
   LinkElement,
   MarkFormat,
   TableCellElement,
   TableElement,
   TableRowElement,
+  TextSize,
   VideoElement,
 } from './types';
 
@@ -62,11 +64,7 @@ export const toggleBlock = (editor: Editor, format: BlockFormat): void => {
   const isActive = isBlockActive(editor, format);
   const isList = LIST_TYPES.includes(format);
 
-  Transforms.unwrapNodes(editor, {
-    match: n =>
-      !Editor.isEditor(n) && SlateElement.isElement(n) && LIST_TYPES.includes(n.type as string),
-    split: true,
-  });
+  unwrapList(editor);
 
   let newProperties: Partial<CustomElement>;
 
@@ -88,7 +86,7 @@ export const toggleBlock = (editor: Editor, format: BlockFormat): void => {
 
 const isAlignableElement = (
   element: SlateElement
-): element is SlateElement & { align?: Alignment } => {
+): element is SlateElement & { align?: Alignment; fontSize?: TextSize } => {
   return ALIGNABLE_TYPES.has(element.type as string);
 };
 
@@ -116,6 +114,75 @@ export const setAlignment = (editor: Editor, align: Alignment): void => {
     { align },
     {
       match: n => !Editor.isEditor(n) && SlateElement.isElement(n) && isAlignableElement(n),
+    }
+  );
+};
+
+const unwrapList = (editor: Editor): void => {
+  Transforms.unwrapNodes(editor, {
+    match: n =>
+      !Editor.isEditor(n) && SlateElement.isElement(n) && LIST_TYPES.includes(n.type as string),
+    split: true,
+  });
+};
+
+export const getCurrentFontSize = (editor: Editor): TextSize | undefined => {
+  const { selection } = editor;
+  if (!selection) return undefined;
+
+  const [match] = Array.from(
+    Editor.nodes(editor, {
+      at: Editor.unhangRange(editor, selection),
+      match: n =>
+        !Editor.isEditor(n) && SlateElement.isElement(n) && isAlignableElement(n) && !!n.fontSize,
+    })
+  );
+
+  return match ? (match[0] as (typeof match)[0] & { fontSize?: TextSize }).fontSize : undefined;
+};
+
+export const setFontSize = (editor: Editor, fontSize?: TextSize): void => {
+  Transforms.setNodes(
+    editor,
+    { fontSize },
+    {
+      match: n => !Editor.isEditor(n) && SlateElement.isElement(n) && isAlignableElement(n),
+    }
+  );
+};
+
+export const getCurrentHeadingLevel = (editor: Editor): HeadingLevel | undefined => {
+  const { selection } = editor;
+  if (!selection) return undefined;
+
+  const [match] = Array.from(
+    Editor.nodes(editor, {
+      at: Editor.unhangRange(editor, selection),
+      match: n => !Editor.isEditor(n) && SlateElement.isElement(n) && n.type === 'heading',
+    })
+  );
+
+  return match ? (match[0] as (typeof match)[0] & { level?: HeadingLevel }).level : undefined;
+};
+
+export const setHeadingLevel = (editor: Editor, level?: HeadingLevel): void => {
+  unwrapList(editor);
+  if (!level) {
+    Transforms.setNodes(
+      editor,
+      { type: 'paragraph' },
+      {
+        match: n => !Editor.isEditor(n) && SlateElement.isElement(n) && Editor.isBlock(editor, n),
+      }
+    );
+    return;
+  }
+
+  Transforms.setNodes(
+    editor,
+    { type: 'heading', level },
+    {
+      match: n => !Editor.isEditor(n) && SlateElement.isElement(n) && Editor.isBlock(editor, n),
     }
   );
 };

@@ -12,12 +12,16 @@ import {
   isBlockActive,
   isLinkActive,
   isMarkActive,
+  getCurrentFontSize,
+  getCurrentHeadingLevel,
   removeLink,
   setAlignment,
+  setFontSize,
+  setHeadingLevel,
   toggleBlock,
   toggleMark,
 } from './helpers';
-import { Alignment, BlockFormat, MarkFormat } from './types';
+import { Alignment, BlockFormat, HeadingLevel, MarkFormat, TextSize } from './types';
 
 interface ToolbarButtonProps {
   format: MarkFormat | BlockFormat;
@@ -116,6 +120,62 @@ const ActionButton: React.FC<ActionButtonProps> = ({ icon, title, onClick, isAct
   </button>
 );
 
+const FONT_SIZE_VALUES: TextSize[] = Array.from({ length: 22 }, (_, idx) => 9 + idx);
+
+const FontSizeSelect: React.FC = () => {
+  const editor = useSlate();
+  const currentSize = getCurrentFontSize(editor);
+
+  return (
+    <label className="flex items-center gap-2 text-xs font-semibold text-slate-400">
+      폰트
+      <select
+        value={currentSize ? currentSize.toString() : ''}
+        onChange={event => {
+          const value = event.target.value;
+          setFontSize(editor, value ? (Number(value) as TextSize) : undefined);
+        }}
+        className="bg-slate-900 border border-slate-600 rounded-md px-2 py-1 text-slate-100 focus:outline-none focus:ring-2 focus:ring-amber-400 text-xs"
+      >
+        <option value="">기본</option>
+        {FONT_SIZE_VALUES.map(size => (
+          <option key={size} value={size}>
+            {size}px
+          </option>
+        ))}
+      </select>
+    </label>
+  );
+};
+
+const HEADING_LEVELS: HeadingLevel[] = [1, 2, 3, 4, 5, 6];
+
+const HeadingSelect: React.FC = () => {
+  const editor = useSlate();
+  const currentLevel = getCurrentHeadingLevel(editor);
+
+  return (
+    <label className="flex items-center gap-2 text-xs font-semibold text-slate-400">
+      제목
+      <select
+        value={currentLevel ?? ''}
+        onChange={event => {
+          const value = event.target.value;
+          setHeadingLevel(editor, value ? (Number(value) as HeadingLevel) : undefined);
+        }}
+        className="bg-slate-900 border border-slate-600 rounded-md px-2 py-1 text-slate-100 focus:outline-none focus:ring-2 focus:ring-amber-400 text-xs"
+      >
+        <option value="">본문</option>
+        {HEADING_LEVELS.map(level => (
+          <option key={level} value={level}>
+            H{level}
+          </option>
+        ))}
+      </select>
+    </label>
+  );
+};
+
 export const Toolbar: React.FC = () => {
   const editor = useSlate();
   const linkActive = isLinkActive(editor);
@@ -130,10 +190,22 @@ export const Toolbar: React.FC = () => {
 
       <Divider />
 
-      {/* Block Buttons */}
-      <ToolbarButton format="heading" icon="H1" isBlock title="제목" />
+      {/* Heading Selector */}
+      <HeadingSelect />
+      {/* Font Size */}
+      <FontSizeSelect />
+
+      <Divider />
+
       <ToolbarButton format="blockquote" icon="❝" isBlock title="인용문" />
       <ToolbarButton format="code-block" icon="{ }" isBlock title="코드 블록" />
+      <ActionButton
+        icon="━"
+        title="구분선 추가"
+        onClick={() => {
+          insertDivider(editor);
+        }}
+      />
 
       <Divider />
 
@@ -147,6 +219,8 @@ export const Toolbar: React.FC = () => {
       <AlignmentButton align="left" icon="⇤" title="좌측 정렬" />
       <AlignmentButton align="center" icon="↔" title="가운데 정렬" />
       <AlignmentButton align="right" icon="⇥" title="우측 정렬" />
+
+      <Divider />
 
       <Divider />
 
@@ -186,15 +260,9 @@ export const Toolbar: React.FC = () => {
           insertLink(editor, url.trim());
         }}
       />
+
       <ActionButton
-        icon="━"
-        title="구분선 추가"
-        onClick={() => {
-          insertDivider(editor);
-        }}
-      />
-      <ActionButton
-        icon="▦"
+        icon="표"
         title="표 삽입"
         onClick={() => {
           const rowsInput = window.prompt('행 개수를 입력하세요 (1-10, 기본 2)', '2');
