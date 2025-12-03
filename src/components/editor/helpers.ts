@@ -84,7 +84,9 @@ export const toggleBlock = (editor: Editor, format: BlockFormat): void => {
   }
 };
 
-const isAlignableElement = (element: SlateElement): boolean => {
+const isAlignableElement = (
+  element: SlateElement
+): element is SlateElement & { align?: Alignment } => {
   return ALIGNABLE_TYPES.has(element.type as string);
 };
 
@@ -167,9 +169,11 @@ const normalizeUrl = (url: string): string => {
 };
 
 export const isLinkActive = (editor: Editor): boolean => {
-  const [link] = Editor.nodes(editor, {
-    match: n => !Editor.isEditor(n) && SlateElement.isElement(n) && n.type === 'link',
-  });
+  const [link] = Array.from(
+    Editor.nodes(editor, {
+      match: n => !Editor.isEditor(n) && SlateElement.isElement(n) && n.type === 'link',
+    })
+  );
   return !!link;
 };
 

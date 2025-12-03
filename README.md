@@ -1,36 +1,38 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## Slate Editor Demo
 
-## Getting Started
+Rich-text playground built with Next.js 14, Slate.js, Tailwind CSS, and TypeScript.
 
-First, run the development server:
+### Development
 
 ```bash
-npm run dev
-# or
+yarn install
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Static Build (GitHub Pages)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+yarn build   # `next build` with output: 'export'
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- The static site will be generated in the `out/` directory, ready to upload to GitHub Pages.
+- If the site will live under `https://yourname.github.io/<repo>`, set `NEXT_PUBLIC_REPO_BASE=<repo>` before running `yarn build` to ensure the correct basePath/assetPrefix.
 
-## Learn More
+### Scripts
 
-To learn more about Next.js, take a look at the following resources:
+| Script          | Description                               |
+| --------------- | ----------------------------------------- |
+| `yarn dev`      | Start local dev server                    |
+| `yarn build`    | Production build (writes `out/` via `output: 'export'`) |
+| `yarn export`   | Alias for `yarn build`                    |
+| `yarn lint`     | ESLint check                              |
+| `yarn format`   | Prettier write                            |
+| `yarn format:check` | Prettier check                        |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Deployment to GitHub Pages
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. `yarn build`
+2. Upload the `out/` folder contents to your `gh-pages` branch (or use a GitHub Action to do so).
+3. Enable GitHub Pages for that branch/folder.
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This project relies entirely on static rendering and client-side interactivity, so no Node.js server is required in production.

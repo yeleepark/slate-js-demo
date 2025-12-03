@@ -80,7 +80,7 @@ export type TableCellElement = AlignableElement & {
   children: RichText[];
 };
 
-export type TableRowElement = {
+export type TableRowElement = AlignableElement & {
   type: 'table-row';
   children: TableCellElement[];
 };
