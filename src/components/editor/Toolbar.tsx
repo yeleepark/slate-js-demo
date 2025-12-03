@@ -221,7 +221,7 @@ export const Toolbar: React.FC = () => {
     const hexPattern = /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
     if (!hexPattern.test(prefixed)) return null;
     if (prefixed.length === 4) {
-      const [, r, g, b] = prefixed;
+      const [, r, g, b] = prefixed.match(/^#([0-9a-fA-F])([0-9a-fA-F])([0-9a-fA-F])$/) ?? [];
       return `#${r}${r}${g}${g}${b}${b}`.toLowerCase();
     }
     return prefixed.toLowerCase();
@@ -235,182 +235,186 @@ export const Toolbar: React.FC = () => {
     }
     setColorInput(normalized);
     setTextColor(editor, normalized);
-  }, [colorInput, editor]);
+  }, [colorInput, editor, normalizeHex]);
 
   return (
-    <div className="flex flex-wrap items-center gap-1 p-3 bg-slate-800/80 backdrop-blur-sm border-b border-slate-700/50 rounded-t-xl">
-      <input
-        ref={imageInputRef}
-        type="file"
-        accept="image/*"
-        className="hidden"
-        onChange={handleImageFile}
-      />
-      {/* Mark Buttons */}
-      <ToolbarButton format="bold" icon="B" title="굵게 (Ctrl+B)" />
-      <ToolbarButton format="italic" icon="I" title="기울임 (Ctrl+I)" />
-      <ToolbarButton format="underline" icon="U" title="밑줄 (Ctrl+U)" />
-      <ToolbarButton format="code" icon="<>" title="코드 (Ctrl+`)" />
-
-      <Divider />
-
-      {/* Heading Selector */}
-      <HeadingSelect />
-      {/* Font Size */}
-      <FontSizeSelect />
-      {/* Font Color */}
-      <label className="flex items-center gap-2 text-xs font-semibold text-slate-400">
-        색상
+    <div className="flex flex-wrap items-center p-3 bg-slate-800/80 backdrop-blur-sm border-b border-slate-700/50 rounded-t-xl justify-between gap-2">
+      <div className="flex items-center gap-1">
         <input
-          type="color"
-          value={colorInput}
-          onChange={event => {
-            setColorInput(event.target.value);
-            setTextColor(editor, event.target.value);
-          }}
-          className="h-8 w-10 bg-slate-900 border border-slate-600 rounded-md p-1 cursor-pointer"
+          ref={imageInputRef}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={handleImageFile}
         />
-        <input
-          type="text"
-          value={colorInput}
-          onChange={event => setColorInput(event.target.value)}
-          onBlur={applyHexColor}
-          onKeyDown={event => {
-            if (event.key === 'Enter') {
-              event.preventDefault();
+        {/* Mark Buttons */}
+        <ToolbarButton format="bold" icon="B" title="굵게 (Ctrl+B)" />
+        <ToolbarButton format="italic" icon="I" title="기울임 (Ctrl+I)" />
+        <ToolbarButton format="underline" icon="U" title="밑줄 (Ctrl+U)" />
+        <ToolbarButton format="code" icon="<>" title="코드 (Ctrl+`)" />
+
+        <Divider />
+
+        {/* Heading Selector */}
+        <HeadingSelect />
+        {/* Font Size */}
+        <FontSizeSelect />
+
+        <Divider />
+        {/* Font Color */}
+        <label className="flex items-center gap-2 text-xs font-semibold text-slate-400">
+          색상
+          <input
+            type="color"
+            value={colorInput}
+            onChange={event => {
+              setColorInput(event.target.value);
+              setTextColor(editor, event.target.value);
+            }}
+            className="h-8 w-10 bg-slate-900 border border-slate-600 rounded-md p-1 cursor-pointer"
+          />
+          <input
+            type="text"
+            value={colorInput}
+            onChange={event => setColorInput(event.target.value)}
+            onBlur={applyHexColor}
+            onKeyDown={event => {
+              if (event.key === 'Enter') {
+                event.preventDefault();
+                applyHexColor();
+              }
+            }}
+            placeholder="#ff9900"
+            className="bg-slate-900 border border-slate-600 rounded-md px-2 py-1 text-slate-100 focus:outline-none focus:ring-2 focus:ring-amber-400 text-xs w-24"
+          />
+          <button
+            type="button"
+            className="px-2 py-1 rounded-md text-xs bg-slate-700/60 text-slate-200 hover:bg-slate-600"
+            onMouseDown={e => {
+              e.preventDefault();
               applyHexColor();
-            }
+            }}
+          >
+            적용
+          </button>
+          <button
+            type="button"
+            className="px-2 py-1 rounded-md text-xs bg-slate-700/60 text-slate-200 hover:bg-slate-600"
+            onMouseDown={e => {
+              e.preventDefault();
+              setTextColor(editor, undefined);
+              setColorInput('#cbd5e1');
+            }}
+          >
+            초기화
+          </button>
+        </label>
+      </div>
+
+      <div className="flex items-center gap-1">
+        <ToolbarButton format="blockquote" icon="❝" isBlock title="인용문" />
+        <ToolbarButton format="code-block" icon="{ }" isBlock title="코드 블록" />
+        <ActionButton
+          icon="━"
+          title="구분선 추가"
+          onClick={() => {
+            insertDivider(editor);
           }}
-          placeholder="#ff9900"
-          className="bg-slate-900 border border-slate-600 rounded-md px-2 py-1 text-slate-100 focus:outline-none focus:ring-2 focus:ring-amber-400 text-xs w-24"
         />
-        <button
-          type="button"
-          className="px-2 py-1 rounded-md text-xs bg-slate-700/60 text-slate-200 hover:bg-slate-600"
-          onMouseDown={e => {
-            e.preventDefault();
-            applyHexColor();
+
+        <Divider />
+
+        {/* List Buttons */}
+        <ToolbarButton format="bulleted-list" icon="•" isBlock title="글머리 기호 목록" />
+        <ToolbarButton format="numbered-list" icon="1." isBlock title="번호 매기기 목록" />
+
+        <Divider />
+
+        {/* Alignment Buttons */}
+        <AlignmentButton align="left" icon="⇤" title="좌측 정렬" />
+        <AlignmentButton align="center" icon="↔" title="가운데 정렬" />
+        <AlignmentButton align="right" icon="⇥" title="우측 정렬" />
+
+        <Divider />
+
+        <Divider />
+
+        {/* Media / Link Buttons */}
+        <ActionButton
+          icon="🖼"
+          title="이미지 추가"
+          onClick={() => {
+            imageInputRef.current?.click();
           }}
-        >
-          적용
-        </button>
-        <button
-          type="button"
-          className="px-2 py-1 rounded-md text-xs bg-slate-700/60 text-slate-200 hover:bg-slate-600"
-          onMouseDown={e => {
-            e.preventDefault();
-            setTextColor(editor, undefined);
-            setColorInput('#cbd5e1');
+        />
+        <ActionButton
+          icon="▶"
+          title="YouTube 영상 추가"
+          onClick={() => {
+            const url = window.prompt('YouTube 링크를 입력하세요');
+            if (!url) return;
+            const title = window.prompt('영상 제목(선택 사항)을 입력하세요') ?? undefined;
+            insertVideo(editor, url.trim(), title?.trim() || undefined);
           }}
-        >
-          초기화
-        </button>
-      </label>
+        />
+        <ActionButton
+          icon="🔗"
+          title={linkActive ? '링크 수정/제거' : '링크 추가'}
+          isActive={linkActive}
+          onClick={() => {
+            const currentUrl = getActiveLinkUrl(editor);
+            if (linkActive) {
+              const newUrl = window
+                .prompt('링크 URL을 수정하거나 비워서 제거하세요', currentUrl ?? 'https://')
+                ?.trim();
 
-      <Divider />
+              if (newUrl === undefined || newUrl === null) return;
+              if (!newUrl) {
+                removeLink(editor);
+                return;
+              }
 
-      <ToolbarButton format="blockquote" icon="❝" isBlock title="인용문" />
-      <ToolbarButton format="code-block" icon="{ }" isBlock title="코드 블록" />
-      <ActionButton
-        icon="━"
-        title="구분선 추가"
-        onClick={() => {
-          insertDivider(editor);
-        }}
-      />
-
-      <Divider />
-
-      {/* List Buttons */}
-      <ToolbarButton format="bulleted-list" icon="•" isBlock title="글머리 기호 목록" />
-      <ToolbarButton format="numbered-list" icon="1." isBlock title="번호 매기기 목록" />
-
-      <Divider />
-
-      {/* Alignment Buttons */}
-      <AlignmentButton align="left" icon="⇤" title="좌측 정렬" />
-      <AlignmentButton align="center" icon="↔" title="가운데 정렬" />
-      <AlignmentButton align="right" icon="⇥" title="우측 정렬" />
-
-      <Divider />
-
-      <Divider />
-
-      {/* Media / Link Buttons */}
-      <ActionButton
-        icon="🖼"
-        title="이미지 추가"
-        onClick={() => {
-          imageInputRef.current?.click();
-        }}
-      />
-      <ActionButton
-        icon="▶"
-        title="YouTube 영상 추가"
-        onClick={() => {
-          const url = window.prompt('YouTube 링크를 입력하세요');
-          if (!url) return;
-          const title = window.prompt('영상 제목(선택 사항)을 입력하세요') ?? undefined;
-          insertVideo(editor, url.trim(), title?.trim() || undefined);
-        }}
-      />
-      <ActionButton
-        icon="🔗"
-        title={linkActive ? '링크 수정/제거' : '링크 추가'}
-        isActive={linkActive}
-        onClick={() => {
-          const currentUrl = getActiveLinkUrl(editor);
-          if (linkActive) {
-            const newUrl = window
-              .prompt('링크 URL을 수정하거나 비워서 제거하세요', currentUrl ?? 'https://')
-              ?.trim();
-
-            if (newUrl === undefined || newUrl === null) return;
-            if (!newUrl) {
-              removeLink(editor);
+              upsertLink(editor, newUrl);
               return;
             }
 
-            upsertLink(editor, newUrl);
-            return;
-          }
+            const url = window.prompt('추가할 링크 URL을 입력하세요', 'https://')?.trim();
+            if (!url) return;
 
-          const url = window.prompt('추가할 링크 URL을 입력하세요', 'https://')?.trim();
-          if (!url) return;
+            const selectionText = getSelectedText(editor);
+            let linkText: string | undefined = selectionText ?? undefined;
 
-          const selectionText = getSelectedText(editor);
-          let linkText: string | undefined = selectionText ?? undefined;
+            if (!selectionText) {
+              const textInput =
+                window.prompt('표시할 링크 텍스트 (비우면 URL을 그대로 사용)', url) ?? '';
+              linkText = textInput.trim() || undefined;
+            }
 
-          if (!selectionText) {
-            const textInput =
-              window.prompt('표시할 링크 텍스트 (비우면 URL을 그대로 사용)', url) ?? '';
-            linkText = textInput.trim() || undefined;
-          }
+            upsertLink(editor, url, linkText);
+          }}
+        />
 
-          upsertLink(editor, url, linkText);
-        }}
-      />
+        <ActionButton
+          icon="표"
+          title="표 삽입"
+          onClick={() => {
+            const rowsInput = window.prompt('행 개수를 입력하세요 (1-10, 기본 2)', '2');
+            if (rowsInput === null) return;
+            const colsInput = window.prompt('열 개수를 입력하세요 (1-6, 기본 2)', '2');
+            if (colsInput === null) return;
 
-      <ActionButton
-        icon="표"
-        title="표 삽입"
-        onClick={() => {
-          const rowsInput = window.prompt('행 개수를 입력하세요 (1-10, 기본 2)', '2');
-          if (rowsInput === null) return;
-          const colsInput = window.prompt('열 개수를 입력하세요 (1-6, 기본 2)', '2');
-          if (colsInput === null) return;
+            const rows = Number(rowsInput);
+            const cols = Number(colsInput);
 
-          const rows = Number(rowsInput);
-          const cols = Number(colsInput);
+            if (Number.isNaN(rows) || Number.isNaN(cols)) {
+              alert('숫자를 입력해주세요.');
+              return;
+            }
 
-          if (Number.isNaN(rows) || Number.isNaN(cols)) {
-            alert('숫자를 입력해주세요.');
-            return;
-          }
-
-          insertTable(editor, rows, cols);
-        }}
-      />
+            insertTable(editor, rows, cols);
+          }}
+        />
+      </div>
     </div>
   );
 };
