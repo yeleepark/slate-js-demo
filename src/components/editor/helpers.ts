@@ -20,6 +20,20 @@ export const isMarkActive = (editor: Editor, format: MarkFormat): boolean => {
   return marks ? marks[format] === true : false;
 };
 
+export const getCurrentColor = (editor: Editor): string | undefined => {
+  const marks = Editor.marks(editor);
+  const color = marks?.color;
+  return typeof color === 'string' ? color : undefined;
+};
+
+export const setTextColor = (editor: Editor, color?: string): void => {
+  if (!color) {
+    Editor.removeMark(editor, 'color');
+    return;
+  }
+  Editor.addMark(editor, 'color', color);
+};
+
 export const toggleMark = (editor: Editor, format: MarkFormat): void => {
   const isActive = isMarkActive(editor, format);
   if (isActive) {

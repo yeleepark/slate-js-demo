@@ -229,5 +229,11 @@ export const Leaf: React.FC<RenderLeafProps> = ({ attributes, children, leaf }) 
     );
   }
 
-  return <span {...attributes}>{formattedChildren}</span>;
+  const style = leaf.color ? { color: leaf.color } : undefined;
+
+  return (
+    <span {...attributes} style={style}>
+      {formattedChildren}
+    </span>
+  );
 };

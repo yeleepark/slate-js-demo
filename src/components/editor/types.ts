@@ -11,6 +11,7 @@ export type CustomText = {
   italic?: boolean;
   underline?: boolean;
   code?: boolean;
+  color?: string;
 };
 
 type AlignableElement = {

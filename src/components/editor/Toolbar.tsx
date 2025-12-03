@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useSlate } from 'slate-react';
 import {
   insertImage,
@@ -13,8 +13,10 @@ import {
   isMarkActive,
   getCurrentFontSize,
   getCurrentHeadingLevel,
+  getCurrentColor,
   getActiveLinkUrl,
   getSelectedText,
+  setTextColor,
   upsertLink,
   removeLink,
   setAlignment,
@@ -182,6 +184,12 @@ export const Toolbar: React.FC = () => {
   const editor = useSlate();
   const linkActive = isLinkActive(editor);
   const imageInputRef = useRef<HTMLInputElement | null>(null);
+  const currentColor = getCurrentColor(editor);
+  const [colorInput, setColorInput] = useState(currentColor ?? '#cbd5e1');
+
+  useEffect(() => {
+    setColorInput(currentColor ?? '#cbd5e1');
+  }, [currentColor]);
 
   const handleImageFile = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -206,6 +214,29 @@ export const Toolbar: React.FC = () => {
     [editor]
   );
 
+  const normalizeHex = useCallback((value: string): string | null => {
+    const trimmed = value.trim();
+    if (!trimmed) return null;
+    const prefixed = trimmed.startsWith('#') ? trimmed : `#${trimmed}`;
+    const hexPattern = /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
+    if (!hexPattern.test(prefixed)) return null;
+    if (prefixed.length === 4) {
+      const [, r, g, b] = prefixed;
+      return `#${r}${r}${g}${g}${b}${b}`.toLowerCase();
+    }
+    return prefixed.toLowerCase();
+  }, []);
+
+  const applyHexColor = useCallback(() => {
+    const normalized = normalizeHex(colorInput);
+    if (!normalized) {
+      alert('유효한 HEX 색상 코드를 입력하세요 (예: #ff9900 또는 ff9900).');
+      return;
+    }
+    setColorInput(normalized);
+    setTextColor(editor, normalized);
+  }, [colorInput, editor]);
+
   return (
     <div className="flex flex-wrap items-center gap-1 p-3 bg-slate-800/80 backdrop-blur-sm border-b border-slate-700/50 rounded-t-xl">
       <input
@@ -227,6 +258,54 @@ export const Toolbar: React.FC = () => {
       <HeadingSelect />
       {/* Font Size */}
       <FontSizeSelect />
+      {/* Font Color */}
+      <label className="flex items-center gap-2 text-xs font-semibold text-slate-400">
+        색상
+        <input
+          type="color"
+          value={colorInput}
+          onChange={event => {
+            setColorInput(event.target.value);
+            setTextColor(editor, event.target.value);
+          }}
+          className="h-8 w-10 bg-slate-900 border border-slate-600 rounded-md p-1 cursor-pointer"
+        />
+        <input
+          type="text"
+          value={colorInput}
+          onChange={event => setColorInput(event.target.value)}
+          onBlur={applyHexColor}
+          onKeyDown={event => {
+            if (event.key === 'Enter') {
+              event.preventDefault();
+              applyHexColor();
+            }
+          }}
+          placeholder="#ff9900"
+          className="bg-slate-900 border border-slate-600 rounded-md px-2 py-1 text-slate-100 focus:outline-none focus:ring-2 focus:ring-amber-400 text-xs w-24"
+        />
+        <button
+          type="button"
+          className="px-2 py-1 rounded-md text-xs bg-slate-700/60 text-slate-200 hover:bg-slate-600"
+          onMouseDown={e => {
+            e.preventDefault();
+            applyHexColor();
+          }}
+        >
+          적용
+        </button>
+        <button
+          type="button"
+          className="px-2 py-1 rounded-md text-xs bg-slate-700/60 text-slate-200 hover:bg-slate-600"
+          onMouseDown={e => {
+            e.preventDefault();
+            setTextColor(editor, undefined);
+            setColorInput('#cbd5e1');
+          }}
+        >
+          초기화
+        </button>
+      </label>
 
       <Divider />
 
