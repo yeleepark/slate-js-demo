@@ -1,7 +1,14 @@
 'use client';
 
 import React, { useCallback, useState } from 'react';
-import { createEditor, Descendant, Editor, Range, Transforms } from 'slate';
+import {
+  createEditor,
+  Descendant,
+  Editor,
+  Range,
+  Transforms,
+  Element as SlateElement,
+} from 'slate';
 import { Slate, Editable, withReact } from 'slate-react';
 import { withHistory } from 'slate-history';
 import { Toolbar } from './Toolbar';
@@ -35,7 +42,7 @@ export const SlateEditor: React.FC = () => {
     if (!selection || !Range.isCollapsed(selection)) return false;
 
     const blockEntry = Editor.above(editor, {
-      match: n => Editor.isBlock(editor, n),
+      match: n => SlateElement.isElement(n) && Editor.isBlock(editor, n),
     });
 
     if (!blockEntry) return false;
