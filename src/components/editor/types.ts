@@ -70,6 +70,13 @@ export type ImageElement = AlignableElement & {
   children: CustomText[];
 };
 
+export type VideoElement = AlignableElement & {
+  type: 'video';
+  url: string;
+  title?: string;
+  children: CustomText[];
+};
+
 export type DividerElement = AlignableElement & {
   type: 'divider';
   children: CustomText[];
@@ -99,6 +106,7 @@ export type CustomElement =
   | NumberedListElement
   | ListItemElement
   | ImageElement
+  | VideoElement
   | LinkElement
   | DividerElement
   | TableElement
@@ -178,6 +186,13 @@ export const initialValue: Descendant[] = [
     type: 'image',
     url: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1200&q=80',
     caption: 'Unsplash 제공 예시 이미지',
+    align: 'center',
+    children: [{ text: '' }],
+  },
+  {
+    type: 'video',
+    url: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+    title: 'YouTube 예시 영상',
     align: 'center',
     children: [{ text: '' }],
   },

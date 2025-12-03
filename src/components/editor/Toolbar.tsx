@@ -7,6 +7,7 @@ import {
   insertLink,
   insertDivider,
   insertTable,
+  insertVideo,
   isAlignmentActive,
   isBlockActive,
   isLinkActive,
@@ -159,6 +160,16 @@ export const Toolbar: React.FC = () => {
           const alt = window.prompt('이미지 설명(선택 사항)을 입력하세요') ?? undefined;
           const caption = window.prompt('이미지 캡션(선택 사항)을 입력하세요') ?? undefined;
           insertImage(editor, url.trim(), alt?.trim() || undefined, caption?.trim() || undefined);
+        }}
+      />
+      <ActionButton
+        icon="▶"
+        title="YouTube 영상 추가"
+        onClick={() => {
+          const url = window.prompt('YouTube 링크를 입력하세요');
+          if (!url) return;
+          const title = window.prompt('영상 제목(선택 사항)을 입력하세요') ?? undefined;
+          insertVideo(editor, url.trim(), title?.trim() || undefined);
         }}
       />
       <ActionButton

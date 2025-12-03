@@ -1,5 +1,4 @@
-const normalizeBase = value =>
-  value?.trim().replace(/^\/|\/$/g, '') || undefined;
+const normalizeBase = value => value?.trim().replace(/^\/|\/$/g, '') || undefined;
 const resolvedBase =
   normalizeBase(process.env.NEXT_PUBLIC_BASE_PATH) ||
   (process.env.NODE_ENV === 'production' ? 'slate-js-demo' : undefined);
@@ -18,4 +17,3 @@ const nextConfig = {
 };
 
 export default nextConfig;
-

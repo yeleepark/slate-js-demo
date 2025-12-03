@@ -102,6 +102,31 @@ export const Element: React.FC<RenderElementProps> = ({ attributes, children, el
         </div>
       );
 
+    case 'video':
+      return (
+        <div
+          {...attributes}
+          className="my-8 flex justify-center"
+          style={{ textAlign: getTextAlign(element.align) }}
+        >
+          <div contentEditable={false} className="w-full max-w-3xl">
+            <div className="relative w-full pt-[56.25%] rounded-xl overflow-hidden border border-slate-700 bg-black shadow-lg shadow-slate-900/40">
+              <iframe
+                src={element.url}
+                title={element.title ?? 'YouTube video'}
+                className="absolute inset-0 h-full w-full"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
+            {element.title && (
+              <p className="text-xs text-slate-400 text-center mt-2">{element.title}</p>
+            )}
+          </div>
+          {children}
+        </div>
+      );
+
     case 'link':
       return (
         <a

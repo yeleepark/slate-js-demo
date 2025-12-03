@@ -10,6 +10,7 @@ import {
   TableCellElement,
   TableElement,
   TableRowElement,
+  VideoElement,
 } from './types';
 
 export const isMarkActive = (editor: Editor, format: MarkFormat): boolean => {
@@ -40,6 +41,7 @@ const ALIGNABLE_TYPES = new Set<string>([
   'table-row',
   'table-cell',
   'divider',
+  'video',
 ]);
 
 export const isBlockActive = (editor: Editor, format: BlockFormat): boolean => {
@@ -130,6 +132,40 @@ export const insertImage = (editor: Editor, url: string, alt?: string, caption?:
   };
 
   Transforms.insertNodes(editor, image);
+};
+
+const extractYouTubeId = (url: string): string | null => {
+  if (!url) return null;
+  const patterns = [
+    /(?:youtube\.com\/watch\?v=|youtube\.com\/embed\/|youtube\.com\/shorts\/|youtu\.be\/)([a-zA-Z0-9_-]{11})/,
+  ];
+  for (const pattern of patterns) {
+    const match = url.match(pattern);
+    if (match?.[1]) return match[1];
+  }
+  const urlObj = new URL(url, 'https://youtube.com');
+  const v = urlObj.searchParams.get('v');
+  return v && /^[a-zA-Z0-9_-]{11}$/.test(v) ? v : null;
+};
+
+const buildYouTubeEmbedUrl = (id: string): string => `https://www.youtube.com/embed/${id}?rel=0`;
+
+export const insertVideo = (editor: Editor, url: string, title?: string): void => {
+  const videoId = extractYouTubeId(url.trim());
+  if (!videoId) {
+    alert('유효한 YouTube 링크를 입력하세요.');
+    return;
+  }
+
+  const video: VideoElement = {
+    type: 'video',
+    url: buildYouTubeEmbedUrl(videoId),
+    title,
+    align: 'center',
+    children: [{ text: '' }],
+  };
+
+  Transforms.insertNodes(editor, video);
 };
 
 const unwrapLink = (editor: Editor): void => {
