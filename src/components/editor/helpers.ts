@@ -118,6 +118,12 @@ export const setAlignment = (editor: Editor, align: Alignment): void => {
   );
 };
 
+export const getSelectedText = (editor: Editor): string | null => {
+  const { selection } = editor;
+  if (!selection || Range.isCollapsed(selection)) return null;
+  return Editor.string(editor, selection);
+};
+
 const unwrapList = (editor: Editor): void => {
   Transforms.unwrapNodes(editor, {
     match: n =>
@@ -273,6 +279,19 @@ const wrapLink = (editor: Editor, url: string): void => {
   }
 };
 
+const getActiveLinkEntry = (editor: Editor) =>
+  Array.from(
+    Editor.nodes(editor, {
+      match: n => !Editor.isEditor(n) && SlateElement.isElement(n) && n.type === 'link',
+    })
+  )[0];
+
+export const getActiveLinkUrl = (editor: Editor): string | undefined => {
+  const linkEntry = getActiveLinkEntry(editor);
+  const link = linkEntry?.[0] as LinkElement | undefined;
+  return link?.url;
+};
+
 const normalizeUrl = (url: string): string => {
   if (!url) return url;
   if (/^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(url)) {
@@ -290,10 +309,40 @@ export const isLinkActive = (editor: Editor): boolean => {
   return !!link;
 };
 
-export const insertLink = (editor: Editor, url: string): void => {
+export const upsertLink = (editor: Editor, url: string, textOverride?: string): void => {
   const normalized = normalizeUrl(url);
   if (!normalized) return;
-  wrapLink(editor, normalized);
+
+  if (isLinkActive(editor)) {
+    Transforms.setNodes(
+      editor,
+      { url: normalized },
+      {
+        match: n => !Editor.isEditor(n) && SlateElement.isElement(n) && n.type === 'link',
+      }
+    );
+    return;
+  }
+
+  const { selection } = editor;
+  const isCollapsed = selection && Range.isCollapsed(selection);
+
+  const link: LinkElement = {
+    type: 'link',
+    url: normalized,
+    children: isCollapsed ? [{ text: textOverride || normalized }] : [],
+  };
+
+  if (isCollapsed) {
+    Transforms.insertNodes(editor, link);
+  } else {
+    Transforms.wrapNodes(editor, link, { split: true });
+    Transforms.collapse(editor, { edge: 'end' });
+  }
+};
+
+export const insertLink = (editor: Editor, url: string, textOverride?: string): void => {
+  upsertLink(editor, url, textOverride);
 };
 
 export const removeLink = (editor: Editor): void => {

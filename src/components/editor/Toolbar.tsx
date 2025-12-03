@@ -4,7 +4,6 @@ import React from 'react';
 import { useSlate } from 'slate-react';
 import {
   insertImage,
-  insertLink,
   insertDivider,
   insertTable,
   insertVideo,
@@ -14,6 +13,9 @@ import {
   isMarkActive,
   getCurrentFontSize,
   getCurrentHeadingLevel,
+  getActiveLinkUrl,
+  getSelectedText,
+  upsertLink,
   removeLink,
   setAlignment,
   setFontSize,
@@ -248,16 +250,38 @@ export const Toolbar: React.FC = () => {
       />
       <ActionButton
         icon="🔗"
-        title={linkActive ? '링크 제거' : '링크 추가'}
+        title={linkActive ? '링크 수정/제거' : '링크 추가'}
         isActive={linkActive}
         onClick={() => {
+          const currentUrl = getActiveLinkUrl(editor);
           if (linkActive) {
-            removeLink(editor);
+            const newUrl = window
+              .prompt('링크 URL을 수정하거나 비워서 제거하세요', currentUrl ?? 'https://')
+              ?.trim();
+
+            if (newUrl === undefined || newUrl === null) return;
+            if (!newUrl) {
+              removeLink(editor);
+              return;
+            }
+
+            upsertLink(editor, newUrl);
             return;
           }
-          const url = window.prompt('추가할 링크 URL을 입력하세요');
+
+          const url = window.prompt('추가할 링크 URL을 입력하세요', 'https://')?.trim();
           if (!url) return;
-          insertLink(editor, url.trim());
+
+          const selectionText = getSelectedText(editor);
+          let linkText: string | undefined = selectionText ?? undefined;
+
+          if (!selectionText) {
+            const textInput =
+              window.prompt('표시할 링크 텍스트 (비우면 URL을 그대로 사용)', url) ?? '';
+            linkText = textInput.trim() || undefined;
+          }
+
+          upsertLink(editor, url, linkText);
         }}
       />
 
